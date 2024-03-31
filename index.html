@@ -33,33 +33,22 @@
         margin-left: 20px;
     }
     #container {
+        text-align: center;
+        margin-top: 20px;
+    }
+    .card {
         background-color: #ffffff;
         border-radius: 8px;
         padding: 40px;
-        width: 80%;
-        max-width: 400px;
-        text-align: center;
-        margin: 20px auto;
+        width: 300px;
+        display: inline-block;
+        margin: 0 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-    h1 {
-        margin-bottom: 20px;
+    .card h2 {
         color: #333333;
     }
-    label {
-        font-weight: bold;
-        margin-bottom: 10px;
-        display: block;
-        color: #555555;
-    }
-    input[type="number"] {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 20px;
-        border: 1px solid #dddddd;
-        border-radius: 4px;
-        box-sizing: border-box;
-    }
-    button {
+    .button {
         background-color: #007bff;
         color: #ffffff;
         border: none;
@@ -71,14 +60,15 @@
         border-radius: 4px;
         cursor: pointer;
         transition: background-color 0.3s ease;
+        margin-bottom: 10px;
     }
-    button:hover {
+    .button:hover {
         background-color: #0056b3;
     }
-    /* Style for disabled button */
-    button:disabled {
-        background-color: #cccccc;
-        cursor: not-allowed;
+    .description {
+        color: #555555;
+        font-size: 14px;
+        margin-bottom: 20px;
     }
     .stats {
         margin-top: 40px;
@@ -93,9 +83,9 @@
         color: #007bff;
         font-size: 24px;
     }
-    .price {
-        margin-top: 20px;
-        color: #555555;
+    .stats-item {
+        display: inline-block;
+        margin-right: 30px;
     }
     .copyright {
         background-color: #f0f0f0;
@@ -113,103 +103,37 @@
 <nav class="navbar">
     <div class="navbar-logo">ProxyUp</div>
     <div class="navbar-links">
-        <a href="#">Home</a>
+        <a href="">Home</a>
     </div>
 </nav>
 
 <div id="container">
-    <h1>Buy Premium Proxies</h1>
-    <!-- "display: none;" removes sale text. Otherwise, just use "display: true;"-->
-    <h2 style="color: green; display: none;">90% OFF!</h2>
-    <label for="numProxies">Number of Proxies:</label>
-    <input type="number" id="numProxies" min="1" max="10000" value="10">
-    <!-- Add "disabled" attribute to the button -->
-    <button id="generateBtn" disabled>Download Proxies</button>
-    <div class="price" id="priceDisplay">$---</div>
+    <div class="card" id="paidProxies">
+        <h2>Paid Proxies</h2>
+        <button class="button" onclick="location.href='proxyup.github.io/paid'">Get Paid Proxies</button>
+        <p class="description">Non-Expiring Proxies</p>
+    </div>
+    <div class="card" id="freeProxies">
+        <h2>Free Proxy Generator</h2>
+        <button class="button" onclick="location.href='proxyup.github.io/free'">Get Free Proxies</button>
+        <p class="description">Proxies Expire After 24 Hours*</p>
+    </div>
 </div>
 
 <div class="stats">
-    <div class="stats-title">Proxies Sold (Worldwide)</div>
-    <div class="stats-count">1,500,000+</div>
+    <div class="stats-item">
+        <div class="stats-title">Proxies Sold (Worldwide)</div>
+        <div class="stats-count">2,500+</div>
+    </div>
+    <div class="stats-item">
+        <div class="stats-title">Proxies Generated</div>
+        <div class="stats-count">10,000+</div>
+    </div>
 </div>
 
 <div class="copyright">
     &copy; 2024 ProxyUp. All rights reserved.
 </div>
-
-<script>
-// Define variables for proxy price, display element, and file name prefix
-var proxyPrice = 0.03; // Price per proxy
-var priceDisplay = document.getElementById('priceDisplay'); // Price display element
-var fileNamePrefix = 'http_proxies_'; // Prefix for file name
-
-// Update price display based on the number of proxies
-function updatePriceDisplay(numProxies) {
-    var totalPrice = numProxies * proxyPrice;
-    priceDisplay.textContent = '$' + totalPrice.toFixed(2);
-}
-
-// Event listener for input changes
-document.getElementById('numProxies').addEventListener('input', function() {
-    var numProxies = parseInt(this.value);
-    updatePriceDisplay(numProxies);
-    // Enable or disable the button based on the number of proxies
-    var generateBtn = document.getElementById('generateBtn');
-    if (numProxies > 0) {
-        generateBtn.disabled = false;
-    } else {
-        generateBtn.disabled = true;
-    }
-});
-
-// Event listener for generating and downloading proxies
-document.getElementById('generateBtn').addEventListener('click', function() {
-    var numProxies = parseInt(document.getElementById('numProxies').value);
-    generateAndDownloadProxyList(numProxies);
-});
-
-// Function to generate and download proxy list
-function generateAndDownloadProxyList(numProxies) {
-    var proxies = '';
-    for (var i = 0; i < numProxies; i++) {
-        var ip = generateRandomIP();
-        var port = generateRandomPort();
-        var proxy = 'proxyup://' + ip + ':' + port; // Generating HTTP proxy
-        proxies += proxy + '\n';
-    }
-
-    var blob = new Blob([proxies], { type: 'text/plain' });
-    var url = URL.createObjectURL(blob);
-
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = fileNamePrefix + numProxies + '.txt'; // Setting file name
-    document.body.appendChild(a);
-    a.click();
-
-    setTimeout(function() {
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-    }, 0);
-}
-
-// Function to generate random IP address
-function generateRandomIP() {
-    var ip = '';
-    for (var i = 0; i < 4; i++) {
-        ip += Math.floor(Math.random() * 256);
-        if (i < 3) {
-            ip += '.';
-        }
-    }
-    return ip;
-}
-
-// Function to generate random port number
-function generateRandomPort() {
-    return Math.floor(Math.random() * (65535 - 1024) + 1024);
-}
-</script>
 
 </body>
 </html>
